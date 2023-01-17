@@ -12,7 +12,7 @@ You will see server startup information and access logs on STDOUT. The container
 
 The server should be available on http://localhost:5000
 
-Type CTRL-C to stop the server.
+Type CTRL+C to stop the server.
 
 ## Running in AWS
 
