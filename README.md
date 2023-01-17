@@ -14,6 +14,9 @@ The server should be available on http://localhost:5000
 
 Type CTRL+C to stop the server.
 
+### Changing the database details
+Edit the environment variables in the `env.list` file.
+
 ### Changing the HTTP port
 Change the first '5000' in the *docker run* command to the port number you want the server to appear on. Note: your chosen port must be higher than 1024.
 
