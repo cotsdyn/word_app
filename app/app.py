@@ -6,8 +6,7 @@ import logging
 # set up logging
 log = logging.getLogger(__name__)
 
-# populate the db_settings dict with connection details from environment variables: DB_HOSTNAME, DB_NAME, DB_USERNAME, DB_PASSWORD
-
+# populate the db_settings dict from environment variables: DB_HOSTNAME, DB_NAME, DB_USERNAME, DB_PASSWORD
 db_settings = {
     'DB_HOSTNAME':  None,
     'DB_NAME':      None,
