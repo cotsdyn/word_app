@@ -1,10 +1,42 @@
 from flask import Flask
+import os
+import sys
+
+"""Get database connection details from environment variables, and return them as a Dict
+        - DB_HOSTNAME
+        - DB_NAME
+        - DB_USERNAME
+        - DB_PASSWORD"""
+
+db_settings = {
+    'DB_HOSTNAME':  None,
+    'DB_NAME':      None,
+    'DB_USERNAME':  None,
+    'DB_PASSWORD':  None
+}
+
+# get each env var, and test if:
+#   - the env var was unset
+#   - the env var was blank
+for setting_name in db_settings:
+    try:
+        setting_value = os.environ[setting_name]
+    except KeyError:
+        print("ERROR: Could not get database details from environment var '{}'".format(setting_name))
+        sys.exit(1)
+
+    # check that variable is populated
+    if setting_value == "":
+        print("ERROR: environment var '{}' was blank").format(setting_name)
+        sys.exit(1)
+
+    # env var tests passed, add value to settings dictionary
+    db_settings[setting_name] = setting_value
+
+# FIXME do a DB test before starting the webserver
+
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     return '<h1>Hello World</h2>'
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
