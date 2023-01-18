@@ -1,6 +1,10 @@
 from flask import Flask
 import os
 import sys
+import logging
+
+# set up logging
+log = logging.getLogger(__name__)
 
 # populate the db_settings dict with connection details from environment variables: DB_HOSTNAME, DB_NAME, DB_USERNAME, DB_PASSWORD
 
@@ -18,12 +22,12 @@ for setting_name in db_settings:
     try:
         setting_value = os.environ[setting_name]
     except KeyError:
-        print("ERROR: Could not get database details from environment var '{}'".format(setting_name))
+        log.error("ERROR: Could not get database details from environment var '{}'".format(setting_name))
         sys.exit(1)
 
     # check that variable is populated
     if setting_value == "":
-        print("ERROR: environment var '{}' was blank").format(setting_name)
+        log.error("ERROR: environment var '{}' was blank".format(setting_name))
         sys.exit(1)
 
     # env var tests passed, add value to settings dictionary
