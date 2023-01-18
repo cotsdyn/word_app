@@ -63,5 +63,8 @@ def get_word(db: mysql.connector.connection_cext.CMySQLConnection) -> str:
 app = Flask(__name__)
 @app.route('/')
 def index():
-    word = get_word(db)
+    try:
+        word = get_word(db)
+    except:
+        word = "UNKNOWN"
     return '<h1>Hello, {}</h2>'.format(word)
