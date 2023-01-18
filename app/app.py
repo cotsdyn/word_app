@@ -41,14 +41,27 @@ try:
     db = mysql.connector.connect(
         host=db_settings['DB_HOSTNAME'],
         user=db_settings['DB_USERNAME'],
-        password=db_settings['DB_PASSWORD']
+        password=db_settings['DB_PASSWORD'],
+        database=db_settings['DB_NAME']
     )
 except:
     log.error("Could not contact database!")
     sys.exit(1)
 
-app = Flask(__name__)
+def get_word(db: mysql.connector.connection_cext.CMySQLConnection) -> str:
+    """get the first word from the 'words' table in the database"""
+    query = db.cursor()
+    query.execute('SELECT word FROM words WHERE id=1;')
+    results = query.fetchone()
 
+    word = results[0]
+    log.debug('word from DB: "{}"'.format(word))
+    return word
+
+
+# start the webserver
+app = Flask(__name__)
 @app.route('/')
 def index():
-    return '<h1>Hello World</h2>'
+    word = get_word(db)
+    return '<h1>Hello, {}</h2>'.format(word)
