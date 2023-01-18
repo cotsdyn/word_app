@@ -2,9 +2,12 @@ from flask import Flask
 import os
 import sys
 import logging
+import mysql.connector
 
 # set up logging
-log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)  # global change for all potential loggers
+log = logging.getLogger(__name__)  # a logger to console
+
 
 # populate the db_settings dict from environment variables: DB_HOSTNAME, DB_NAME, DB_USERNAME, DB_PASSWORD
 db_settings = {
@@ -21,18 +24,28 @@ for setting_name in db_settings:
     try:
         setting_value = os.environ[setting_name]
     except KeyError:
-        log.error("ERROR: Could not get database details from environment var '{}'".format(setting_name))
+        log.error("Could not get database details from environment var '{}'".format(setting_name))
         sys.exit(1)
 
     # check that variable is populated
     if setting_value == "":
-        log.error("ERROR: environment var '{}' was blank".format(setting_name))
+        log.error("Environment var '{}' was blank".format(setting_name))
         sys.exit(1)
 
     # env var tests passed, add value to settings dictionary
     db_settings[setting_name] = setting_value
+log.debug(db_settings)
 
-# FIXME do a DB test before starting the webserver
+# connect to the DB and fail with an error if we couldn't reach it
+try:
+    db = mysql.connector.connect(
+        host=db_settings['DB_HOSTNAME'],
+        user=db_settings['DB_USERNAME'],
+        password=db_settings['DB_PASSWORD']
+    )
+except:
+    log.error("Could not contact database!")
+    sys.exit(1)
 
 app = Flask(__name__)
 
