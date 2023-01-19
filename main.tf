@@ -51,6 +51,7 @@ resource "aws_security_group" "mysql_admin_from_offices" {
   }
 }
 
+# MySQL database
 resource "aws_db_instance" "db" {
   identifier           = "db-words"
   allocated_storage    = 10
