@@ -11,10 +11,10 @@ provider "aws" {
 }
 
 
-data "aws_security_group" "sg_default" {
+data "aws_security_group" "default" {
   name = "default"
 }
-data "aws_security_group" "sg_mysqlremote" {
+data "aws_security_group" "mysqlremote" {
   name = "mysqlremote"
 }
 
@@ -31,7 +31,7 @@ resource "aws_db_instance" "db" {
 
   publicly_accessible    = true
   vpc_security_group_ids = [
-    data.aws_security_group.sg_default.id,
-    data.aws_security_group.sg_mysqlremote.id
+    data.aws_security_group.default.id,
+    data.aws_security_group.mysqlremote.id
   ]
 }
