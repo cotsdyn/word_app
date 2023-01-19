@@ -30,4 +30,8 @@ resource "aws_db_instance" "db" {
   skip_final_snapshot  = true
 
   publicly_accessible    = true
+  vpc_security_group_ids = [
+    data.aws_security_group.sg_default.id,
+    data.aws_security_group.sg_mysqlremote.id
+  ]
 }
