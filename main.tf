@@ -15,9 +15,9 @@ data "aws_security_group" "default" {
   name = "default"
 }
 
-# a Container Registry for our "easelive-demo" Docker images
+# a Container Registry for our "word_app" Docker images
 resource "aws_ecr_repository" "repo" {
-  name                 = "easelive-demo"
+  name                 = "word_app"
   image_tag_mutability = "MUTABLE"
 }
 
