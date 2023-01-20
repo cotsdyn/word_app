@@ -3,12 +3,18 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
+    env = {
+      source = "tchupp/env"
+      version = "0.0.2"
+    }
   }
 }
 
 provider "aws" {
   region = "us-east-1"
 }
+
+provider "env" {}
 
 # get the "default" AWS security group in the default VPC
 data "aws_security_group" "default" {
@@ -52,24 +58,27 @@ resource "aws_security_group" "mysql_admin_from_offices" {
 }
 
 # the app's MySQL database
-variable "db_username" {
-  type      = string
-  nullable  = false
+data "env_variable" "DB_NAME" {
+  name = "DB_NAME"
 }
 
-variable "db_password" {
-  type      = string
-  nullable  = false
+data "env_variable" "DB_USERNAME" {
+  name = "DB_USERNAME"
+}
+
+data "env_variable" "DB_PASSWORD" {
+  name = "DB_PASSWORD"
 }
 
 resource "aws_db_instance" "db" {
-  identifier           = "db-words"
+  identifier           = "words"
+  db_name              = data.env_variable.DB_NAME.value
   allocated_storage    = 10
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
-  username             = var.db_username
-  password             = var.db_password
+  username             = data.env_variable.DB_USERNAME.value
+  password             = data.env_variable.DB_PASSWORD.value
   parameter_group_name = "default.mysql8.0"
   skip_final_snapshot  = true
 
