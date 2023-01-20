@@ -41,7 +41,7 @@ Note: Terraform will pick up the environment variables DB_NAME, DB_USERNAME and 
 1. check the proposed infrastructre in AWS by running: `terraform plan`
 2. if the infrastructure plan looks acceptable, apply with: `terraform apply`
 
-Terraform will now tell you the DNS address of your new application as "ALB_dns" - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
+Terraform will now tell you the DNS address of your new application as "ALB_DNS" - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
 
 ## set up containers
 1. generate a temporary ECR login key for Docker: `./docker-login-ecr.sh`
