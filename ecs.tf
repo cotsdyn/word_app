@@ -3,53 +3,6 @@ resource "aws_ecs_cluster" "main" {
   name = "ecs"
 }
 
-# IAM "execution role" to allow ECS to execute tasks
-# (we are using the AWS-provided default) 
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "role-name"
- 
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-}
-
-resource "aws_iam_role" "ecs_task_role" {
-  name = "role-name-task"
- 
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-}
- 
-resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
 # a log group for our app logs
 resource "aws_cloudwatch_log_group" "applogs" {
   name = "word_app"
@@ -58,6 +11,17 @@ resource "aws_cloudwatch_log_group" "applogs" {
 # run our DB setup script in ECS Fargate
 
 # run our app container in ECS Fargate
+data "template_file" "word_app" {
+  template = "${file("./fargate_tasks/word_app.json")}"
+  vars = {
+    ecr_image_uri = "${aws_ecr_repository.repo.repository_url}:latest"
+    db_hostname   = "${aws_db_instance.db.address}"
+    db_name       = "${data.env_variable.DB_NAME.value}"
+    db_username   = "${data.env_variable.DB_USERNAME.value}"
+    db_password   = "${data.env_variable.DB_PASSWORD.value}"
+  }
+}
+
 resource "aws_ecs_task_definition" "word_app" {
   family                   = "word_app"
   network_mode             = "awsvpc"
@@ -68,45 +32,5 @@ resource "aws_ecs_task_definition" "word_app" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
-  container_definitions = jsonencode([{
-  name        = "word_app_container"
-  image       = "${aws_ecr_repository.repo.repository_url}:latest"
-  essential   = true
-  
-  "environment": [
-      {
-        "name": "DB_HOSTNAME",
-        "value": "${aws_db_instance.db.address}"
-      },
-      {
-        "name": "DB_NAME",
-        "value": "${data.env_variable.DB_NAME.value}"
-      },
-      {
-        "name": "DB_USERNAME",
-        "value": "${data.env_variable.DB_USERNAME.value}"
-      },
-      {
-        "name": "DB_PASSWORD",
-        "value": "${data.env_variable.DB_PASSWORD.value}"
-      }
-    ]
-
-  "logConfiguration": {
-    "logDriver": "awslogs",
-    "options": {
-      "awslogs-region" : "us-east-1",
-      "awslogs-group" : "word_app",
-      "awslogs-stream-prefix" : "project"
-    }
-  },
-
-  portMappings = [
-    {
-      protocol      = "tcp"
-      containerPort = 5000
-      hostPort      = 5000
-    }
-  ]
-  }])
+  container_definitions    = "${data.template_file.word_app.rendered}"
 }
