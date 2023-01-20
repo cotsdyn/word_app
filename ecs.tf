@@ -50,12 +50,6 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-#resource "aws_iam_role_policy_attachment" "task_s3" {
-#  role       = "${aws_iam_role.ecs_task_role.name}"
-#  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-#}
-
-
 # a log group for our app logs
 resource "aws_cloudwatch_log_group" "applogs" {
   name = "word_app"
