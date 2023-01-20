@@ -41,7 +41,7 @@ Note: Terraform will pick up the environment variables DB_NAME, DB_USERNAME and 
 1. check the proposed infrastructre in AWS by running: `terraform plan`
 2. if the infrastructure plan looks acceptable, apply with: `terraform apply`
 
-Terraform will now tell you the endpoint addresses of your new application - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
+Terraform will now tell you the DNS address of your new application as "ALB_dns" - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
 
 ## containers
 1. generate a temporary ECR login key for Docker: `./docker-login-ecr.sh`
@@ -51,7 +51,8 @@ Terraform will now tell you the endpoint addresses of your new application - sav
 1. initialise the MySQL database: `./database-init-task.sh`
 2. you can view active tasks with: `aws ecs list-tasks --cluster ecs` - when the task disappears, your DB will have been initialised
 
-
+# viewing your application
+In a web-browser, visit the address you were given as ALB_DNS.
 
 # Information
 

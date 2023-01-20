@@ -124,4 +124,12 @@ resource "aws_ecs_service" "word_app" {
     subnets           = data.aws_subnets.default.ids
     assign_public_ip  = true
   }
+  
+  load_balancer {
+    target_group_arn = aws_lb_target_group.alb.arn
+    container_name   = "word_app_container"
+    container_port   = 5000
+  }
+
+  depends_on = [aws_lb_listener.listener]
 }
