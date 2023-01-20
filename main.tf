@@ -27,11 +27,6 @@ resource "aws_ecr_repository" "repo" {
   image_tag_mutability = "MUTABLE"
 }
 
-# our ECS cluster
-resource "aws_ecs_cluster" "main" {
-  name = "ecs"
-}
-
 # security group to allow MySQL administration from the offices
 resource "aws_security_group" "mysql_admin_from_offices" {
   name        = "mysql_admin_from_offices"
