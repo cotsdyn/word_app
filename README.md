@@ -23,7 +23,7 @@ run `aws configure` and give it the access details for the deployment user you j
 
 
 # Running the *word_app* service on AWS
-## environment variables
+## set up environment variables
 The application deployment is configured via *environment variables* on your machine. These are used to set up the MySQL database in AWS RDS, and are passed to the word_app webapp container itself.
 
 The environment variables you need to export in your shell are:
@@ -35,7 +35,7 @@ export DB_PASSWORD=this-is-an-interesting-password
 
 You do not need to supply DB_HOSTNAME; this is pulled automatically from the MySQL RDS instance by Terraform.
 
-## infrastructure
+## set up infrastructure
 Note: Terraform will pick up the environment variables DB_NAME, DB_USERNAME and DB_PASSWORD from your shell. To set these up, [see previous section](#environment-variables).
 
 1. check the proposed infrastructre in AWS by running: `terraform plan`
@@ -43,17 +43,16 @@ Note: Terraform will pick up the environment variables DB_NAME, DB_USERNAME and 
 
 Terraform will now tell you the DNS address of your new application as "ALB_dns" - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
 
-## containers
+## set up containers
 1. generate a temporary ECR login key for Docker: `./docker-login-ecr.sh`
 2. build the Docker containers and push them to our ECR repositories: `./docker-build-and-push.sh`
 
-## database data load
+## load database data
 1. initialise the MySQL database: `./database-init-task.sh`
 2. you can view active tasks with: `aws ecs list-tasks --cluster ecs` - when the task disappears, your DB will have been initialised
 
-# viewing your application
+## view the application
 In a web-browser, visit the address you were given as ALB_DNS.
 
 # Information
-
 Written in Python, using the [Flask](https://flask.palletsprojects.com/en/2.2.x/) web requests framework.
