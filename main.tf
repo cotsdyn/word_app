@@ -67,6 +67,7 @@ data "env_variable" "DB_PASSWORD" {
 
 resource "aws_db_instance" "db" {
   identifier           = "words"
+  db_name              = data.env_variable.DB_NAME.value
   allocated_storage    = 10
   engine               = "mysql"
   engine_version       = "8.0"
