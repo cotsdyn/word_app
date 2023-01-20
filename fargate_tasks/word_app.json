@@ -1,4 +1,5 @@
-  [{
+[
+  {
     "name": "word_app_container",
     "image": "${ecr_image_uri}",
     "essential": true,
