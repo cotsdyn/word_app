@@ -5,30 +5,30 @@
     "essential": true,
 
     "environment": [
-        {
-          "name": "DB_HOSTNAME",
-          "value": "${db_hostname}"
-        },
-        {
-          "name": "DB_NAME",
-          "value": "${db_name}"
-        },
-        {
-          "name": "DB_USERNAME",
-          "value": "${db_username}"
-        },
-        {
-          "name": "DB_PASSWORD",
-          "value": "${db_password}"
-        }
-      ],
+      {
+        "name": "DB_HOSTNAME",
+        "value": "${db_hostname}"
+      },
+      {
+        "name": "DB_NAME",
+        "value": "${db_name}"
+      },
+      {
+        "name": "DB_USERNAME",
+        "value": "${db_username}"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "value": "${db_password}"
+      }
+    ],
 
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-region" : "us-east-1",
-        "awslogs-group" : "word_app",
-        "awslogs-stream-prefix" : "project"
+        "awslogs-region": "us-east-1",
+        "awslogs-group": "word_app",
+        "awslogs-stream-prefix": "ecs"
       }
     },
 
