@@ -8,13 +8,12 @@ resource "aws_cloudwatch_log_group" "applogs" {
   name = "word_app"
 }
 
-# run our DB setup script in ECS Fargate
 
 # run our app container in ECS Fargate
 data "template_file" "word_app" {
   template = "${file("./fargate_tasks/word_app.json")}"
   vars = {
-    ecr_image_uri = "${aws_ecr_repository.repo.repository_url}:latest"
+    ecr_image_uri = "${aws_ecr_repository.word_app.repository_url}:latest"
     db_hostname   = "${aws_db_instance.db.address}"
     db_name       = "${data.env_variable.DB_NAME.value}"
     db_username   = "${data.env_variable.DB_USERNAME.value}"
