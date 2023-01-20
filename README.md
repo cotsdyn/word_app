@@ -1,30 +1,57 @@
-# easelive-demo
-
+# word_app
 A webapp that serves "Hello, {word from a database}" upon request.
 
-# Usage
+Note: This app runs in the default VPC of your AWS account.
 
-## Running in Docker
-1. Locally, build the container: `docker build -t easelive-demo .`
-2. Then, run the container: `docker run -it -p 5000:5000 --env-file env.list --rm easelive-demo`
+# Requirements
+You will need to have installed:
+- terraform
+- [awscli](https://aws.amazon.com/cli/)
+- docker
 
-You will see server startup information and access logs on STDOUT. The container will run in the foreground until you stop or kill it.
+# Pre-setup 
+## deployment user in your AWS account
+You will need to set up a deployment user in AWS:
+1. Go to [the IAM console](https://console.aws.amazon.com/iam/)
+2. Add a user
+3. Select "Access key - programmatic access"
+4. As this is a demo, attach the "AdministratorAccess" policy to this user
+5. Create the user and note down the *Access Key ID* and *Secret Access Key*
 
-The server should be available on http://localhost:5000
+## AWS credentials
+run `aws configure` and give it the access details for the deployment user you just created
 
-Type CTRL+C to stop the server.
 
-### Changing the database details
-Edit the environment variables in the `env.list` file.
+# Running the *word_app* service on AWS
+## environment variables
+The application deployment is configured via *environment variables* on your machine. These are used to set up the MySQL database in AWS RDS, and are passed to the word_app webapp container itself.
 
-### Changing the HTTP port
-Change the first '5000' in the *docker run* command to the port number you want the server to appear on. Note: your chosen port must be higher than 1024.
+The environment variables you need to export in your shell are:
+```
+export DB_NAME=words
+export DB_USERNAME=admin
+export DB_PASSWORD=this-is-an-interesting-password
+```
 
-Example change to run on port 8080: `docker run -it -p 8080:5000`...
+You do not need to supply DB_HOSTNAME; this is pulled automatically from the MySQL RDS instance by Terraform.
 
-FIXME: instructions for running a default MySQL container?
+## infrastructure
+Note: Terraform will pick up the environment variables DB_NAME, DB_USERNAME and DB_PASSWORD from your shell. To set these up, [see previous section](#environment-variables).
 
-## Running in AWS
+1. check the proposed infrastructre in AWS by running: `terraform plan`
+2. if the infrastructure plan looks acceptable, apply with: `terraform apply`
+
+Terraform will now tell you the endpoint addresses of your new application - save this information for later; the app needs to have container images pushed and the database loaded - see next section.
+
+## containers
+1. generate a temporary ECR login key for Docker: `./docker-login-ecr.sh`
+2. build the Docker containers and push them to our ECR repositories: `./docker-build-and-push.sh`
+
+## database data load
+1. initialise the MySQL database: `./database-init-task.sh`
+2. you can view active tasks with: `aws ecs list-tasks --cluster ecs` - when the task disappears, your DB will have been initialised
+
+
 
 # Information
 
