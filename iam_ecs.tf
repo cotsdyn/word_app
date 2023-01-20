@@ -1,8 +1,8 @@
-# ECS "task execution role"
-# From the docs: "A task execution IAM role is used by the container agent to make AWS API requests on your behalf."
+# ECS "task role"
+# From the docs: "A task IAM role allows containers in the task to make API requests to AWS services."
 # (we are using the AWS-provided default)
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "role-name"
+resource "aws_iam_role" "ecs_task_role" {
+  name = "role-name-task"
  
   assume_role_policy = <<EOF
 {
@@ -21,11 +21,11 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 EOF
 }
 
-# ECS "task role"
-# From the docs: "A task IAM role allows containers in the task to make API requests to AWS services."
+# ECS "task execution role"
+# From the docs: "A task execution IAM role is used by the container agent to make AWS API requests on your behalf."
 # (we are using the AWS-provided default)
-resource "aws_iam_role" "ecs_task_role" {
-  name = "role-name-task"
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "role-name"
  
   assume_role_policy = <<EOF
 {
